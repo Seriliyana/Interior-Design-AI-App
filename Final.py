@@ -5,15 +5,13 @@ from dotenv import load_dotenv
 
 from IPython.display import Image
 
-dotenv_path = "D:\Yayasan Peneraju\FINAL PROJECT\.env"
-load_dotenv(dotenv_path)
+load_dotenv()
 
-client = OpenAI(
-    api_key=os.environ['OPENAI_API_KEY'],
-)
-#api_key = st.secrets["OPENAI_API_KEY"]
+#client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 
-#client = OpenAI(api_key=api_key)
+api_key = st.secrets["OPENAI_API_KEY"]
+
+client = OpenAI(api_key=api_key)
 
 #take the description of user and generate a relevant role for the system message
 def user_ai(msg):
@@ -37,8 +35,7 @@ def user_ai(msg):
     role = system_response.choices[0].message.content
     #print(role)
     return role
-
-user_ai("I have a room with 200 square feet. I want a aesthethic brown colour theme for my room and modern decoration.")
+    
 def cover_ai(msg):
     cover_response = client.images.generate(
     model="dall-e-3",
