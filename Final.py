@@ -8,11 +8,49 @@ from IPython.display import Image
 load_dotenv()
 
 #client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
- api_key = st.secrets["OPENAI_API_KEY"]
+api_key = st.secrets["OPENAI_API_KEY"]
 
- client = OpenAI(api_key=api_key)
+client = OpenAI(api_key=api_key)
+
+# Function to generate the interior design based on user inputs
+def interior_design_ai(place, room, color):
+    description = st.text_input("What do you want to design? (Short description)")
+
+    if place == "House":
+        room_options = ["Bedroom", "Living Room", "Kitchen", "Toilet", "Powder Room", "Yard", "Balcony"]
+    elif place == "Office":
+        room_options = ["Pantry", "Office Room", "Meeting Room", "Toilet"]
+    elif place == "Shop":
+        room_options = ["Dining Area", "Cooking Area", "Counter Area", "Shop Entrance", "Toilet"]
+    elif place == "Hotel":
+        room_options = ["Guest Rooms and Suites", "Lobby and Reception", "Restaurants and Dining", "Bars and Lounges", "Conference and Event Spaces", "Spa and Wellness Centers", "Fitness Centers and Recreational Spaces", "Hallways, Elevators, and Public Restrooms"]
+    else:
+        room_options = []  # Add more options based on other places
+
+    selected_room = st.selectbox("Select the room:", room_options)
+
+    # Function to suggest suitable themes for the chosen place
+    def suggest_themes(place):
+        if place == "House":
+            return ["Modern", "Vintage", "Minimalist", "Rustic", "Scandinavian"]
+        elif place == "Office":
+            return ["Professional", "Contemporary", "Minimalist", "Innovative"]
+        elif place == "Shop":
+            return ["Elegant", "Cozy", "Industrial", "Chic"]
+        elif place == "Hotel":
+            return ["Luxurious", "Modern", "Classic", "Resort-style"]
+        else:
+            return []  # Add more themes for other places
+
+    if st.button("Suggest Suitable Themes"):
+        themes = suggest_themes(place)
+        st.write(f"Suggested themes for {place}: {themes}")
+
+    if description and room and color:
+        user_prompt = f"I want to design a {place.lower()} {selected_room.lower()} with {color} theme. {description}"
 
 # take the description of the user and generate a relevant role for the system message
+
 def user_ai(msg):
     system_response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -38,7 +76,7 @@ def user_ai(msg):
 def cover_ai(msg):
     cover_response = client.images.generate(
     model="dall-e-3",
-    prompt=f"{msg} in modern aesthetic brown theme",
+    prompt=msg,
     size="1024x1024",
     quality="standard",
     n=1,
@@ -72,16 +110,24 @@ def design_ai(msg):
     return design_prompt
 
 
-# main function to chain everything
-def interior_design_ai(user_prompt):
-    idesign = user_ai(user_prompt)
+def interior_design_ai(place, room, color):
+    description = st.text_input("What do you want to design? (Short description)")
+    
+    user_prompt = f"I want to design a {place.lower()} {room.lower()} with {color} theme. {description}"
+    
+    idesign = user_ai(user_prompt)  # Adjust user_ai function to handle user_prompt
     design = design_ai(idesign)
     image = cover_ai(design)
 
     st.image(image, caption="Generated Image")  # Display the generated image
     st.write("Design Prompt:", design)  # Display the design prompt
 
+# Streamlit app UI
+st.title("Interior Design Prompt Generator")
 
-# Example usage
-user_prompt = "I have a master bedroom with 200 square feet. I want an aesthetic brown color theme for my room and modern decoration."
-interior_design_ai(user_prompt)
+# Input fields for user to specify place, room, and color
+place = st.selectbox("What is your place?", ["House", "Office", "Shop", "Hotel"])  # Add more places as needed
+color = st.text_input("Enter the desired color:")
+room = st.text_input("Enter the room size:")
+
+interior_design_ai(place, room, color)
