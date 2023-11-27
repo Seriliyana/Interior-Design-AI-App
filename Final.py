@@ -1,13 +1,9 @@
 import os
 import streamlit as st
 from openai import OpenAI
-from dotenv import load_dotenv
-
 from IPython.display import Image
 
-#load_dotenv()
-
-#client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+# Access your API key directly from Streamlit secrets
 api_key = st.secrets["OPENAI_API_KEY"]
 client = OpenAI(api_key=api_key)
 
