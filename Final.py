@@ -5,11 +5,10 @@ from dotenv import load_dotenv
 
 from IPython.display import Image
 
-load_dotenv()
+#load_dotenv()
 
 #client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 api_key = st.secrets["OPENAI_API_KEY"]
-
 client = OpenAI(api_key=api_key)
 
 # Function to generate the interior design based on user inputs
