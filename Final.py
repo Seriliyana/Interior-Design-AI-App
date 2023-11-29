@@ -5,8 +5,8 @@ from openai import OpenAI
 
 #load_dotenv()
 
-api_key = st.secrets["OPENAI_API_KEY"]
-client = OpenAI(api_key=api_key)
+openai_api_key = st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=openai_api_key)
 
 def user_ai(msg):
     system_response = client.chat.completions.create(
