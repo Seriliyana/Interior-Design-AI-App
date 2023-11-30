@@ -118,4 +118,4 @@ if place:
             if user_input:
                 interior_design_ai(f"I want to design a {place.lower()} {selected_room.lower()} with {color} theme. {user_input}")
             else:
-                st.warning("Please provide a description to generate the design.")
+                st.warning("Please provide a description with suggestion to generate the design.")
